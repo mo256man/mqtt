@@ -1,5 +1,5 @@
 // MQTTブローカーのURL
-const brokerUrl = "ws://broker.emqx.io:8083/mqtt"; // WebSocketを使用
+const brokerUrl = "wss://broker.emqx.io:8084/mqtt"; // WebSocketを使用
 
 // トピック設定
 const topic = "python/mqtt";
