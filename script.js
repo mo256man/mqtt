@@ -42,11 +42,10 @@ client.on("message", (topic, message) => {
         if (parsedMessage.clientId === CLIENT_ID) {
             console.log("自分自身のメッセージを無視する");
         } else {
-            console.log("Received message:", parsedMessage.content);
-            const msg = parsedMessage.content.toString();
+            const content = parsedMessage.content;
             const elm = document.createElement("p");
-            elm.textContent = `Received message: ${msg} (on topic: ${topic})`;
-            document.getElementById("messages").appendChild(msg);
+            elm.textContent = `Received message: ${content} (on topic: ${topic})`;
+            document.getElementById("messages").appendChild(content);
         }
     } catch (err) {
         console.error("Error parsing message:", message.toString());
