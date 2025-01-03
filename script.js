@@ -1,40 +1,60 @@
-// MQTTブローカーのURL
-const brokerUrl = "wss://broker.emqx.io:8084/mqtt"; // WebSocketを使用
-
-// トピック設定
+const brokerUrl = "wss://broker.emqx.io:8084/mqtt";
+const CLIENT_ID = "github-client-" + Math.floor(Math.random() * 999);
 const topic = "python/mqtt";
 
-// クライアントの作成
-const client = mqtt.connect(brokerUrl);
+const client = mqtt.connect(brokerUrl, {
+    username: "mo256man",
+    password: "momo1024",
+    clientId: CLIENT_ID,
+});
+
 
 // 接続イベント
 client.on("connect", () => {
-    console.log("Connected to MQTT broker");
-    // トピックをサブスクライブ
-        client.subscribe(topic, (err) => {
-        if (!err) {
-            console.log(`Subscribed to topic: ${topic}`);
-        } else {
-            console.error("Failed to subscribe:", err);
-        }
+    console.log("Connected to EMQX broker (SSL)");
+    client.subscribe(topic, (err) => {
+    if (!err) {
+        console.log(`Subscribed to topic: ${topic}`);
+    } else {
+        console.error("Failed to subscribe:", err);
+    }
     });
 });
 
-// メッセージ受信イベント
+// メッセージ送信
+const publishMessage = (content) => {
+    const message = JSON.stringify({
+        clientId: CLIENT_ID,
+        content: content,
+    });
+    client.publish(topic, message, (err) => {
+        if (!err) {
+            console.log("Message published:", content);
+        }
+    });
+}
+
+
+// メッセージ受信
 client.on("message", (topic, message) => {
-    const msg = document.createElement("p");
-    msg.textContent = `Received message: ${message.toString()} (on topic: ${topic})`;
-    document.getElementById("messages").appendChild(msg);
+    try {
+        const parsedMessage = JSON.parse(message.toString());
+        if (parsedMessage.clientId === CLIENT_ID) {
+            console.log("自分自身のメッセージを無視する");
+        } else {
+            console.log("Received message:", parsedMessage.content);
+            const msg = parsedMessage.content.toString();
+            const elm = document.createElement("p");
+            elm.textContent = `Received message: ${msg} (on topic: ${topic})`;
+            document.getElementById("messages").appendChild(msg);
+        }
+    } catch (err) {
+        console.error("Error parsing message:", message.toString());
+    }
 });
 
-    // メッセージの送信（Publish）
+
+// メッセージの送信（Publish）
 document.getElementById("publish").addEventListener("click", () => {
-    const payload = "Hello from JavaScript!";
-    client.publish(topic, payload, {}, (err) => {
-        if (!err) {
-            console.log("Message published:", payload);
-        } else {
-            console.error("Failed to publish:", err);
-        }
-    });
+    publishMessage("hello world");
 });
