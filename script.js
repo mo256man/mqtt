@@ -39,12 +39,13 @@ const publishMessage = (content) => {
 client.on("message", (topic, message) => {
     try {
         const parsedMessage = JSON.parse(message.toString());
-        if (parsedMessage.clientId === CLIENT_ID) {
+        const clientId = parsedMessage.clientId;
+        const content = parsedMessage.content;
+        if (clientId === CLIENT_ID) {
             console.log("自分自身のメッセージを無視する");
         } else {
-            const content = parsedMessage.content;
             const elm = document.createElement("p");
-            elm.textContent = `Received message: ${content} (on topic: ${topic})`;
+            elm.textContent = `from ${clientId} Received message: ${content} (on topic: ${topic})`;
             document.getElementById("messages").appendChild(elm);
         }
     } catch (err) {
