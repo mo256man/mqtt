@@ -45,7 +45,7 @@ client.on("message", (topic, message) => {
             const content = parsedMessage.content;
             const elm = document.createElement("p");
             elm.textContent = `Received message: ${content} (on topic: ${topic})`;
-            document.getElementById("messages").appendChild(content);
+            document.getElementById("messages").appendChild(elm);
         }
     } catch (err) {
         console.error("Error parsing message:", message.toString());
