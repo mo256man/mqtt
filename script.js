@@ -25,11 +25,10 @@ client.on("connect", () => {
 // メッセージ送信
 const publishMessage = (content) => {
     const now = cdate();
-    const str_now = now.format("YYYY/MM/DD HH:mm:ss");
-    console.log(str_now);
+    const str_datetime = now.format("YYYY/MM/DD HH:mm:ss");
     const message = JSON.stringify({
         clientId: CLIENT_ID,
-        datetime: str_now,
+        datetime: str_datetime,
         content: content,
     });
     client.publish(topic, message, (err) => {
@@ -37,8 +36,7 @@ const publishMessage = (content) => {
             console.log("Message published:", content);
         }
     });
-    const html = `<span style ="blue">${str_now} send ${content}</span>`;
-
+    writeLog("blue", str_datetime, content);
 }
 
 
@@ -47,19 +45,25 @@ client.on("message", (topic, message) => {
     try {
         const parsedMessage = JSON.parse(message.toString());
         const clientId = parsedMessage.clientId;
+        const str_datetime = parsedMessage.datetime;
         const content = parsedMessage.content;
         if (clientId === CLIENT_ID) {
             console.log("自分自身のメッセージを無視する");
         } else {
-            const elm = document.createElement("p");
-            elm.textContent = `from ${clientId} Received message: ${content} (on topic: ${topic})`;
-            document.getElementById("messages").appendChild(elm);
+            writeLog("red", str_datetime, content);
         }
     } catch (err) {
         console.error("Error parsing message:", message.toString());
     }
 });
 
+// ログ記載
+const writeLog = (color, str_datetime, content) => {
+    const elm = document.createElement("span");
+    elm.className = color
+    elm.innerHTML = `${str_datetime} publish: ${content}`;
+    document.getElementById("messages").appendChild(elm);
+}
 
 // メッセージの送信（Publish）
 document.getElementById("publish").addEventListener("click", () => {
