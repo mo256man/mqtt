@@ -36,7 +36,7 @@ const publishMessage = (content) => {
             console.log("Message published:", content);
         }
     });
-    writeLog("blue", str_datetime, content);
+    writeLog("send", str_datetime, content);
 }
 
 
@@ -50,7 +50,7 @@ client.on("message", (topic, message) => {
         if (clientId === CLIENT_ID) {
             console.log("自分自身のメッセージを無視する");
         } else {
-            writeLog("red", str_datetime, content);
+            writeLog("receive", str_datetime, content);
         }
     } catch (err) {
         console.error("Error parsing message:", message.toString());
@@ -58,10 +58,11 @@ client.on("message", (topic, message) => {
 });
 
 // ログ記載
-const writeLog = (color, str_datetime, content) => {
+const writeLog = (transferMode, str_datetime, content) => {
+    const color = transferMode == "send" ? "blue" : "red";
     const elm = document.createElement("span");
     elm.className = color
-    elm.innerHTML = `${str_datetime} publish: ${content}`;
+    elm.innerHTML = `${str_datetime} ${transferMode}: ${content}`;
     document.getElementById("messages").appendChild(elm);
 }
 
