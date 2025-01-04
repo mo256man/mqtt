@@ -62,7 +62,7 @@ const writeLog = (transferMode, str_datetime, content) => {
     const color = transferMode == "send" ? "blue" : "red";
     const elm = document.createElement("span");
     elm.className = color
-    elm.innerHTML = `${str_datetime} ${transferMode}: ${content}`;
+    elm.innerHTML = `${str_datetime} ${transferMode}: ${content}<br>`;
     document.getElementById("messages").appendChild(elm);
 }
 
