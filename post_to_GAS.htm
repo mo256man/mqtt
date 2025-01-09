@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POST Example</title>
+</head>
+<body>
+  <h1>Send Data</h1>
+  <button id="sendButton">Send Data</button>
+
+  <script>
+    document.getElementById("sendButton").addEventListener("click", async () => {
+      const url = "https://script.google.com/macros/s/AKfycbxMLS9whNhe8Nbx_jBIaN-fjf3DH-1qxzwddbb1UmxqyAhsMFe0iK2q-Wk9vz0rGjxNXQ/exec";
+      const data = { value:200, name: "John", age: 30 };
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain"
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log("Success:", result);
+        } else {
+          console.error("Error:", response.status, await response.text());
+        }
+      } catch (error) {
+        console.error("Fetch Error:", error);
+      }
+    });
+  </script>
+</body>
+</html>
