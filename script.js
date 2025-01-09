@@ -22,19 +22,13 @@ client.on("connect", () => {
         }
     });
 
-    client.subscribe("$SYS/brokers/+/clients/connected", (err) => {
+    client.subscribe("$SYS/brokers/clients/connected", (err) => {
         if (!err) {
             console.log("Subscribed to total connected clients count");
         }
     });
 
-    client.subscribe("$SYS/brokers/+/clients/+/connected", (err) => {
-        if (!err) {
-            console.log("Subscribed to client connection events");
-        }
-    });
-
-    client.subscribe("$SYS/brokers/+/clients/+/disconnected", (err) => {
+    client.subscribe("$SYS/brokers/clients/disconnected", (err) => {
         if (!err) {
             console.log("Subscribed to client disconnection events");
         }
@@ -42,6 +36,10 @@ client.on("connect", () => {
 });
 
 client.on("message", (topic, message) => {
+    if (topic === "$SYS/brokers/clients/connected") {
+        const ClientCount = message.toString();
+        console.log(ClientCount);
+    }
     if (topic.startsWith("$SYS")) {
         console.log(`$SYS message received: ${topic} - ${message.toString()}`);
 
